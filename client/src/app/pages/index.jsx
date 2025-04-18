@@ -12,7 +12,9 @@ const YouTubeHome = () => {
   useEffect(() => {
     const getVideos = async () => {
       try {
-        const res = await axios.get("http://localhost:8082/watch/home");
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_UPLOAD_URL}/watch/home`
+        );
         console.log(res);
         setVideos(res.data);
         setLoading(false); // Set loading to false when videos are fetched
