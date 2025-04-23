@@ -40,6 +40,7 @@ jobs:
         run: |
           npm install
           npm run build
+          npm run export
 
       # Install backend deps
       - name: Install backend dependencies
@@ -50,7 +51,7 @@ jobs:
       - name: Copy frontend build to watch_service
         run: |
           rm -rf watch_service/build
-          cp -r client/build watch_service/
+          cp -r client/out watch_service/build
 
       # Zip backend folder for deployment
       - name: Zip backend for deployment
