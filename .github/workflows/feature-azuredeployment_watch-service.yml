@@ -2,6 +2,8 @@ name: Build and deploy watch_service to Azure Web App
 
 on:
   push:
+    paths:
+      - 'watch_service/**'
     branches:
       - feature/AzureDeployment
   workflow_dispatch:

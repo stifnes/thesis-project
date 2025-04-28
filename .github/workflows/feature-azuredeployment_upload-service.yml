@@ -2,6 +2,8 @@ name: Build and deploy upload_service to Azure Web App
 
 on:
   push:
+    paths:
+      - 'upload_service/**'
     branches:
       - feature/AzureDeployment
   workflow_dispatch:
