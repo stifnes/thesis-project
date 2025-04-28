@@ -25,12 +25,11 @@ jobs:
           cd client
           npm install
           npm run build
-          npm run export 
 #          npm run test --if-present
 
       - name: Zip artifact for deployment
         run: |
-          cd client
+          cd client/out
           zip -r ../release-${{ github.run_id }}.zip .
 
       - name: Upload artifact
