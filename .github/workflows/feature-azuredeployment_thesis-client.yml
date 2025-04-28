@@ -24,7 +24,8 @@ jobs:
         run: |
           cd client
           npm install
-          npm run build 
+          npm run build
+          npm run export 
 #          npm run test --if-present
 
       - name: Zip artifact for deployment
