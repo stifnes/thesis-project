@@ -13,7 +13,7 @@ const YouTubeHome = () => {
     const getVideos = async () => {
       try {
         const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_UPLOAD_URL}/watch/home`
+          `${process.env.NEXT_PUBLIC_WATCH_URL}/watch/home`
         );
         console.log(res);
         setVideos(res.data);

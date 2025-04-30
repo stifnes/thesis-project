@@ -23,6 +23,9 @@ jobs:
           node-version: '20.x'
 
       - name: npm install and build
+        env:
+          NEXT_PUBLIC_UPLOAD_URL: ${{ secrets.NEXT_PUBLIC_UPLOAD_URL }}
+          NEXT_PUBLIC_WATCH_URL: ${{ secrets.NEXT_PUBLIC_WATCH_URL }}
         run: |
           cd client
           npm install
