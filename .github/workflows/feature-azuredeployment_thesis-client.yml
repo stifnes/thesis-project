@@ -30,18 +30,17 @@ jobs:
           cd client
           npm install
           npm run build
-#          npm run test --if-present
 
       - name: Zip artifact for deployment
         run: |
           cd client
-          zip -r ../release-${{ github.run_id }}.zip .
+          zip -r ../node-app-${{ github.run_id }}.zip .
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: node-app-${{ github.run_id }}
-          path: release-${{ github.run_id }}.zip
+          path: node-app-${{ github.run_id }}.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -49,15 +48,18 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    
+
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: node-app
+          name: node-app-${{ github.run_id }}
+
+      - name: Rename downloaded file
+        run: mv node-app-${{ github.run_id }}.zip app.zip
 
       - name: Unzip artifact
-        run: unzip release-${{ github.run_id }}.zip
+        run: unzip app.zip
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
