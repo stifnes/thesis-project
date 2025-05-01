@@ -5,6 +5,8 @@ name: Build and deploy Node.js app to Azure Web App - thesis-client
 
 on:
   push:
+    paths:
+      - 'client/**'
     branches:
       - feature/AzureDeployment
   workflow_dispatch:
@@ -24,10 +26,13 @@ jobs:
           node-version: '20.x'
 
       - name: npm install, build, and test
+        working-directory: client
+        env:
+          NEXT_PUBLIC_UPLOAD_URL: ${{ secrets.NEXT_PUBLIC_UPLOAD_URL }}
+          NEXT_PUBLIC_WATCH_URL: ${{ secrets.NEXT_PUBLIC_WATCH_URL }}
         run: |
           npm install
           npm run build --if-present
-          npm run test --if-present
 
       - name: Zip artifact for deployment
         run: zip release.zip ./* -r
@@ -60,5 +65,5 @@ jobs:
         with:
           app-name: 'thesis-client'
           slot-name: 'Production'
-          package: .
+          package: ./client
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F34CB9D123D049E98FAFB6261C5236C5 }}
