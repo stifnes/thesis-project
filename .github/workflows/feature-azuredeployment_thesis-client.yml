@@ -9,63 +9,30 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Node.js version
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
 
-      - name: npm install and build
+      - name: Install dependencies and build
+        working-directory: client
         env:
           NEXT_PUBLIC_UPLOAD_URL: ${{ secrets.NEXT_PUBLIC_UPLOAD_URL }}
           NEXT_PUBLIC_WATCH_URL: ${{ secrets.NEXT_PUBLIC_WATCH_URL }}
         run: |
-          cd client
           npm install
           npm run build
 
-      - name: Zip artifact for deployment
-        run: |
-          cd client
-          zip -r ../node-app-${{ github.run_id }}.zip .
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: node-app-${{ github.run_id }}
-          path: node-app-${{ github.run_id }}.zip
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    environment:
-      name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: node-app-${{ github.run_id }}
-
-      - name: Rename downloaded file
-        run: mv node-app-${{ github.run_id }}.zip app.zip
-
-      - name: Unzip artifact
-        run: unzip app.zip
-
       - name: Deploy to Azure Web App
-        id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'thesis-client'
           slot-name: 'Production'
-          package: .
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_60FD089D48634BADB64534E506D31CD2 }}
+          package: ./client
